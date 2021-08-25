@@ -5,12 +5,14 @@
      购物街
   </template>
   </NavBar>
+  <Scroll class="content" ref="scroll" @showTop="showTop" :pull-up-load="true" @pullingUp="learnMore">
   <HomeSwiper :banners="banners"/>
   <RecommendViews :recommends="recommends"/>
   <FeatureView/>
   <TabControl :titles="['流行','新款','精选']" class="tabControl" @tabClick="change"></TabControl>
   <GoodList :goods="showGoods"></GoodList>
-
+  </Scroll>
+  <BackTop @click="backTop" v-show="isShow"/>
 </div>
 </template>
 
@@ -22,11 +24,13 @@ import {getHomeMultidata,getHomeGoods} from "../../network/home";
 import FeatureView from "./childComps/FeatureView";
 import TabControl from "../../components/content/tabControl/TabControl";
 import GoodList from "../../components/content/goods/GoodList";
+import Scroll from "../../components/common/scoll/Scroll";
+import BackTop from "../../components/content/backTop/BackTop";
 
 
 export default {
   name: "Home",
-  components: {NavBar,HomeSwiper,RecommendViews,FeatureView,TabControl,GoodList},
+  components: {NavBar,HomeSwiper,RecommendViews,FeatureView,TabControl,GoodList,Scroll,BackTop},
   data(){
     return{
       banners: [],
@@ -37,6 +41,7 @@ export default {
         'sell':{page:0,list: []}
       },
       currentType:'pop',
+      isShow: false,
     }
   },
   created() {
@@ -78,6 +83,18 @@ export default {
           break
       }
 
+    },
+    backTop(){
+      this.$refs.scroll.scrollTo(0,0);
+    },
+    showTop(position){
+      this.isShow = (-position.y) > 600;
+    },
+    learnMore(){
+      console.log('上拉');
+      this.getHomeGoods(this.currentType);
+      this.$refs.scroll.scroll.refresh();
+      this.$refs.scroll.scroll.finishPullUp();
     }
   }
 }
@@ -91,6 +108,10 @@ export default {
 .tabControl{
   position: sticky;
   top: 44px;
-  z-index: 10;
+  z-index: 1;
+}
+.content{
+  height: calc(100vh - 49px);
+  overflow: scroll;
 }
 </style>
