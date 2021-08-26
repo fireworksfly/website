@@ -28,11 +28,15 @@ export default {
   mounted() {
     this.scroll = new BetterScroll(this.$refs.wrapper,{
        observeDOM:true,
+       observeImage:{
+         debounceTime: 0
+       },
        click: true,
        probeType:this.probeType,
        pullUpLoad: this.pullUpLoad
     })
     this.scroll.on('scroll',(position)=>{
+      console.log(position);
       this.$emit('showTop',position);
     })
     this.scroll.on('pullingUp',()=>{
@@ -48,5 +52,7 @@ export default {
 </script>
 
 <style scoped>
-
+.content{
+  top:0;
+}
 </style>

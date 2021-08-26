@@ -46,7 +46,7 @@ export default {
 }
 .tabControlItem {
   flex:1;
-
+  position: relative;
 }
 .active {
   color: var(--color-high-text);

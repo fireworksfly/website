@@ -5,11 +5,12 @@
      购物街
   </template>
   </NavBar>
+  <TabControl :titles="['流行','新款','精选']" class="tabControlTwo" @tabClick="change" v-show="isFixed" ref="tabControlT"></TabControl>
   <Scroll class="content" ref="scroll" @showTop="showTop" :pull-up-load="true" @pullingUp="learnMore">
   <HomeSwiper :banners="banners"/>
   <RecommendViews :recommends="recommends"/>
   <FeatureView/>
-  <TabControl :titles="['流行','新款','精选']" class="tabControl" @tabClick="change"></TabControl>
+  <TabControl :titles="['流行','新款','精选']" class="tabControl" @tabClick="change" ref="tabControl"></TabControl>
   <GoodList :goods="showGoods"></GoodList>
   </Scroll>
   <BackTop @click="backTop" v-show="isShow"/>
@@ -36,12 +37,14 @@ export default {
       banners: [],
       recommends: [],
       goods:{
-        'pop':{page:0,list: []},
-        'new':{page:0,list: []},
-        'sell':{page:0,list: []}
+        pop:{page:0,list: []},
+        new:{page:0,list: []},
+        sell:{page:0,list: []}
       },
       currentType:'pop',
       isShow: false,
+      isFixed:false,
+      tabOffSetTop: 0,
     }
   },
   created() {
@@ -49,6 +52,9 @@ export default {
     this.getHomeGoods('pop');
     this.getHomeGoods('new');
     this.getHomeGoods('sell');
+  },
+  updated() {
+    this.tabOffSetTop = this.$refs.tabControl.$el.offsetTop - 40;
   },
   computed:{
     showGoods(){
@@ -89,11 +95,12 @@ export default {
     },
     showTop(position){
       this.isShow = (-position.y) > 600;
+
+      // 设置tabControl是否需要吸附
+      this.isFixed = (-position.y) >= this.tabOffSetTop;
     },
     learnMore(){
-      console.log('上拉');
       this.getHomeGoods(this.currentType);
-      this.$refs.scroll.scroll.refresh();
       this.$refs.scroll.scroll.finishPullUp();
     }
   }
@@ -101,6 +108,10 @@ export default {
 </script>
 
 <style scoped>
+#home{
+  height: 100vh;
+  position: relative;
+}
 .homeNav{
   background-color: var(--color-tint);
   color: #ffffff;
@@ -110,8 +121,14 @@ export default {
   top: 44px;
   z-index: 1;
 }
+.tabControlTwo{
+  position:relative;
+  z-index: 10;
+}
 .content{
-  height: calc(100vh - 49px);
+  position:absolute;
+  height: calc(100vh - 44px);
   overflow: scroll;
+  bottom: 49px;
 }
 </style>
