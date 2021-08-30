@@ -29,15 +29,15 @@ export default {
     this.scroll = new BetterScroll(this.$refs.wrapper,{
        observeDOM:true,
        observeImage:{
-         debounceTime: 0
+         debounceTime: 100
        },
        click: true,
        probeType:this.probeType,
-       pullUpLoad: this.pullUpLoad
+       pullUpLoad: this.pullUpLoad,
     })
     this.scroll.on('scroll',(position)=>{
-      console.log(position);
       this.$emit('showTop',position);
+      this.$emit('scrollOn',position);
     })
     this.scroll.on('pullingUp',()=>{
       this.$emit('pullingUp');

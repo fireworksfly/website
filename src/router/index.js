@@ -3,6 +3,7 @@ import Home from "views/home/Home";
 import CateGory from "views/category/CateGory";
 import Profile from "views/profile/Profile";
 import shopCart from "views/shopcart/shopCart";
+import Detail from "../views/detail/Detail";
 const routes = [
   {
     path: '',
@@ -23,6 +24,10 @@ const routes = [
   {
     path: '/shopcart',
     component: shopCart
+  },
+  {
+    path: '/detail/:iid',
+    component: Detail
   }
 ]
 

@@ -5,12 +5,14 @@
      购物街
   </template>
   </NavBar>
-  <TabControl :titles="['流行','新款','精选']" class="tabControlTwo" @tabClick="change" v-show="isFixed" ref="tabControlT"></TabControl>
+ <TabControl :titles="['流行','新款','精选']" class="tabControlTwo" @tabClick="change" v-show="isFixed" ref="tabControlT"></TabControl>
   <Scroll class="content" ref="scroll" @showTop="showTop" :pull-up-load="true" @pullingUp="learnMore">
   <HomeSwiper :banners="banners"/>
   <RecommendViews :recommends="recommends"/>
   <FeatureView/>
-  <TabControl :titles="['流行','新款','精选']" class="tabControl" @tabClick="change" ref="tabControl"></TabControl>
+    <div class="parent">
+    <TabControl :titles="['流行','新款','精选']" class="tabControl" @tabClick="change" ref="tabControl"></TabControl>
+    </div>
   <GoodList :goods="showGoods"></GoodList>
   </Scroll>
   <BackTop @click="backTop" v-show="isShow"/>
@@ -45,6 +47,7 @@ export default {
       isShow: false,
       isFixed:false,
       tabOffSetTop: 0,
+      saveY:100,
     }
   },
   created() {
@@ -54,8 +57,15 @@ export default {
     this.getHomeGoods('sell');
   },
   updated() {
-    this.tabOffSetTop = this.$refs.tabControl.$el.offsetTop - 40;
+    this.tabOffSetTop = this.$refs.tabControl.$el.offsetTop;
   },
+  activated() {
+     this.$refs.scroll.scrollTo(0,this.saveY,15);
+     this.$refs.scroll.scroll.refresh();
+  },
+  deactivated() {
+    this.saveY = this.$refs.scroll.scroll.y;
+ },
   computed:{
     showGoods(){
       return this.goods[this.currentType].list;
@@ -88,7 +98,8 @@ export default {
           this.currentType = 'sell'
           break
       }
-
+      this.$refs.tabControlT.currentIndex = index;
+      this.$refs.tabControl.currentIndex = index;
     },
     backTop(){
       this.$refs.scroll.scrollTo(0,0);
@@ -97,7 +108,7 @@ export default {
       this.isShow = (-position.y) > 600;
 
       // 设置tabControl是否需要吸附
-      this.isFixed = (-position.y) >= this.tabOffSetTop;
+      this.isFixed = (-position.y) >= this.tabOffSetTop - 44;
     },
     learnMore(){
       this.getHomeGoods(this.currentType);
@@ -116,11 +127,13 @@ export default {
   background-color: var(--color-tint);
   color: #ffffff;
 }
+
 .tabControl{
   position: sticky;
   top: 44px;
   z-index: 1;
 }
+
 .tabControlTwo{
   position:relative;
   z-index: 10;
