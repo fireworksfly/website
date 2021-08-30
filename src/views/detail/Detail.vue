@@ -72,18 +72,18 @@ export default {
       this.themePosY.push(this.$refs.param.$el.offsetTop);
       this.themePosY.push(this.$refs.comment.$el.offsetTop);
       this.themePosY.push(this.$refs.recommend.$el.offsetTop);
+      this.themePosY.push(Infinity);
     },
     scrollOn(pos){
       this.getPosY();
-      for (let i = 0; i < this.themePosY.length - 1; ++i) {
+      for (let i = 0; i < this.themePosY.length; ++i) {
         if (
-            // this.detailIndex != i &&
+             this.detailIndex !== i &&
             -pos.y >= this.themePosY[i] &&
             -pos.y < this.themePosY[i + 1]
         ) {
-          console.log('1123456');
           this.detailIndex = i;
-          this.$refs.navBarRef.currIndex = i;
+          this.$refs.navBarRef.currentIndex = i;
           break;
         }
       }
