@@ -1,7 +1,7 @@
 <template>
   <div id="detail">
     <DetailNavBar @itemClick="changeScroll" ref="navBarRef"/>
-    <Scroll class="content" :probe-type="3" :pull-up-load="true" ref="scroll" @scrollOn="scrollOn">
+    <Scroll class="content" :probe-type="3" :pull-up-load="true" ref="scroll" @scrollOn="scrollOn" @showTop="showTop" >
       <DetailSwiper :top-images="topImages" ref="swiper"/>
       <DetailBaseInfo :goods="goods"/>
       <DetailShopInfo :shop="shop"/>
@@ -10,6 +10,8 @@
       <DetailComment :comment="commentInfo" ref="comment"/>
       <GoodList :goods="recommend" ref="recommend"/>
     </Scroll>
+    <BackTop @click="backTop" v-show="isShow"/>
+    <DetailBottomBar @addEvent="addEvent"/>
   </div>
 </template>
 
@@ -24,11 +26,13 @@ import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
 import DetailParamInfo from "./childComps/DetailParamInfo";
 import DetailComment from "./childComps/DetailComment";
 import GoodList from "../../components/content/goods/GoodList";
+import DetailBottomBar from "./childComps/DetailBottomBar";
+import BackTop from "../../components/content/backTop/BackTop";
 export default {
   name: "Detail",
   components:{
     GoodList,
-    DetailNavBar,DetailSwiper,DetailBaseInfo,DetailShopInfo,Scroll,DetailGoodsInfo,DetailParamInfo,DetailComment},
+    DetailNavBar,DetailSwiper,DetailBaseInfo,DetailShopInfo,Scroll,DetailGoodsInfo,DetailParamInfo,DetailComment,DetailBottomBar,BackTop},
   data(){
     return{
       iid:null,
@@ -42,6 +46,7 @@ export default {
       themeY:[],
       detailIndex:0,
       theme:['swiper','param','comment','recommend'],
+      isShow:false,
     }
   },
    created() {
@@ -87,7 +92,27 @@ export default {
           break;
         }
       }
-    }
+    },
+    backTop(){
+      this.$refs.scroll.scrollTo(0,0);
+    },
+    showTop(position){
+      this.isShow = (-position.y) > 800;
+
+      // 设置tabControl是否需要吸附
+      this.isFixed = (-position.y) >= this.tabOffSetTop - 44;
+    },
+    addEvent(){
+      //把信息发送到vuex里
+      const obj = {
+        iid: this.iid,
+        desc: this.goods.desc,
+        price: this.goods.realPrice,
+        title: this.goods.title,
+        img: this.topImages[0]
+      };
+      this.$store.dispatch('addCart',obj);
+    },
   }
 }
 </script>
