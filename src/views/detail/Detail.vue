@@ -28,6 +28,7 @@ import DetailComment from "./childComps/DetailComment";
 import GoodList from "../../components/content/goods/GoodList";
 import DetailBottomBar from "./childComps/DetailBottomBar";
 import BackTop from "../../components/content/backTop/BackTop";
+
 export default {
   name: "Detail",
   components:{
@@ -111,7 +112,9 @@ export default {
         title: this.goods.title,
         img: this.topImages[0]
       };
-      this.$store.dispatch('addCart',obj);
+      this.$store.dispatch('addCart',obj).then(res =>{
+        this.$toast.show(res);
+      });
     },
   }
 }
