@@ -4,7 +4,7 @@
       <CheckButton :isChecked="checkAll" ref="checkButtonRef" />全选
     </div>
     <div class="calc">总计：￥{{ totalPrice}}</div>
-    <div class="buy">去购买({{ totalLength }})</div>
+    <div class="buy" @click="buySth">去购买({{ totalLength }})</div>
   </div>
 </template>
 <script>
@@ -40,6 +40,13 @@ export default {
       let checkFlag = !this.checkAll;
       this.cartList.forEach(item => (item.checked = checkFlag));
     },
+    buySth(){
+      if(this.totalLength === 0){
+        this.$toast.show('请选择要购买的商品');
+      }else{
+         this.$toast.show('购买成功');
+      }
+    }
   }
 };
 </script>
