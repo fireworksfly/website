@@ -11,7 +11,7 @@ export default {
   name: "Toast",
   data(){
     return{
-      message:'hhh',
+      message:'',
       isShow : false,
     }
   },
